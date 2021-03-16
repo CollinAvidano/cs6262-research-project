@@ -6,6 +6,7 @@ websites = ['amazon.com', 'gatech.edu']
 
 for website in websites:
 	print(website)
+
 	# IPv4 dns addresses
 	try:
 		listOfIPv4 = dns.resolver.resolve(website, 'A')
