@@ -1,0 +1,25 @@
+import scrapy
+from form_scraper.items import Form
+class FormSpider(scrapy.Spider):
+    name = "form_scraper"
+
+    def start_requests(self):
+        urls = []
+        with open('urls.csv', newline='') as f:
+            reader = csv.reader(f)
+            data = list(reader)
+        for url in urls:
+            yield scrapy.Request(url=url, depth = 0, callback=self.parse)
+
+    def parse(self, response, depth):
+        for form in response.css('input'):
+            form_item = Form()
+            form_item.url = response.url
+            form_item.given_class = form.attrib('class')
+
+        if depth == 20:
+            return
+
+        for next_page in response.css('a::attr(href)'):
+            if next_page is not None:
+                yield response.follow(next_page, depth + 1, callback=self.parse)
