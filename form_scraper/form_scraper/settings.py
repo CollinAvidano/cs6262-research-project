@@ -31,11 +31,11 @@ ROBOTSTXT_OBEY = True
 #CONCURRENT_REQUESTS_PER_IP = 16
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-# ITEM_PIPELINES = {'scrapy.pipelines.images.ImagesPipeline': 1}
+ITEM_PIPELINES = {'form_scraper.pipelines.FormScraperPipeline': 1}
 
 import os
-IMAGES_STORE = os.path.dirname(os.path.abspath('settings.py')) + "/../results"
-FILES_STORE = os.path.dirname(os.path.abspath('settings.py')) + "/../results"
+IMAGES_STORE = os.path.dirname(os.getcwd() + "/../results")
+FILES_STORE = os.path.dirname(os.getcwd() + "/../results")
 
 # IMAGES_THUMBS = {
 #     'small': (50, 50),

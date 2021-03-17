@@ -6,11 +6,12 @@
 
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
+from scrapy.exporters import CsvItemExporter
 
 class FormScraperPipeline:
     def __init__(self):
         self.file = open("forms.csv", 'wb')
-        self.exporter = CsvItemExporter(self.file, unicode)
+        self.exporter = CsvItemExporter(self.file)
         self.exporter.start_exporting()
 
     def close_spider(self, spider):

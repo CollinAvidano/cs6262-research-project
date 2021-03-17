@@ -9,3 +9,4 @@ from scrapy.item import Item, Field
 class Form(Item):
     url = Field()
     given_class = Field()
+    given_type = Field()
