@@ -1,0 +1,5 @@
+pymysql
+nmap
+sublist3r
+scapy
+Scrapy

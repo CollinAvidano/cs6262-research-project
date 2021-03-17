@@ -17,9 +17,16 @@ class FormSpider(scrapy.Spider):
             form_item.url = response.url
             form_item.given_class = form.attrib('class')
 
+        for form in response.css('form'):
+            form_item = Form()
+            form_item.url = response.url
+            form_item.given_class = form.attrib('class')
+
+        # Hardcoded depth limit
         if depth == 20:
             return
 
         for next_page in response.css('a::attr(href)'):
             if next_page is not None:
+            # should only follow if the url is in the original domain
                 yield response.follow(next_page, depth + 1, callback=self.parse)

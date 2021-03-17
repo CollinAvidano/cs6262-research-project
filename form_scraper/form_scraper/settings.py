@@ -33,8 +33,9 @@ ROBOTSTXT_OBEY = True
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 # ITEM_PIPELINES = {'scrapy.pipelines.images.ImagesPipeline': 1}
 
-IMAGES_STORE = '/home/collin/documents/personal-projects/form_scraper/results'
-FILES_STORE = '/home/collin/documents/personal-projects/form_scraper/results'
+import os
+IMAGES_STORE = os.path.dirname(os.path.abspath('settings.py')) + "/../results"
+FILES_STORE = os.path.dirname(os.path.abspath('settings.py')) + "/../results"
 
 # IMAGES_THUMBS = {
 #     'small': (50, 50),
