@@ -1,0 +1,3 @@
+[submodule "cipherscan"]
+	path = cipherscan
+	url = https://github.com/mozilla/cipherscan.git
