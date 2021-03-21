@@ -12,7 +12,7 @@ class FormSpider(scrapy.Spider):
         extracted = tldextract.extract(url)
         self.allowed_domains = '.'.join((extracted.domain, extracted.suffix))
 
-        custom_settings = {
+    custom_settings = {
         'DEPTH_LIMIT': 20,
         'COOKIES_ENABLED' : False
     }
