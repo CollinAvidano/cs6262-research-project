@@ -7,10 +7,15 @@
 # useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from scrapy.exporters import CsvItemExporter
+import tldextract
 
 class FormScraperPipeline:
-    def __init__(self):
-        self.file = open("forms.csv", 'wb')
+    def open_spider(self, spider):
+        ext = tldextract.extract(spider.url)
+        file_name = '.'.join((ext.domain,ext.suffix,'csv')) # basically just removing the scheme so it doesnt mess with file paths
+        print("HELLOOOOOOOOOOOOOOOOOOOOOOO")
+        print(file_name)
+        self.file = open(file_name, 'wb')
         self.exporter = CsvItemExporter(self.file)
         self.exporter.start_exporting()
 

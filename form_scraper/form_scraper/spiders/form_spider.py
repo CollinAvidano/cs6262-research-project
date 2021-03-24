@@ -1,15 +1,16 @@
 import scrapy
 import csv
+import tldextract  # The module looks up TLDs in the Public Suffix List, mantained by Mozilla volunteers
 
 from form_scraper.items import Form
 class FormSpider(scrapy.Spider):
     name = "form_scraper"
 
-    # def __init__(self, url_csv='urls.csv', depth_max=20, *args, **kwargs):
-    def __init__(self, url_csv='urls.csv', *args, **kwargs):
+    def __init__(self, url, *args, **kwargs):
         super(FormSpider, self).__init__(*args, **kwargs)
-        self.url_csv = url_csv
-        # self.depth_max = depth_max
+        self.url = url
+        extracted = tldextract.extract(url)
+        self.allowed_domains = '.'.join((extracted.domain, extracted.suffix))
 
     custom_settings = {
         'DEPTH_LIMIT': 20,
@@ -17,18 +18,8 @@ class FormSpider(scrapy.Spider):
     }
 
     def start_requests(self):
-        urls = []
-        print("here")
-        with open(self.url_csv, newline='') as f:
-            reader = csv.reader(f)
-            urls = list(reader)
-            print("reader", urls)
-        for url in urls:
-            print(url)
-            yield scrapy.Request(url=url[0], callback=self.parse)
-            # yield scrapy.Request(url=url[0], callback=self.parse, cb_kwargs=dict(depth=0))
+        yield scrapy.Request(url=self.url, callback=self.parse)
 
-    # def parse(self, response, depth):
     def parse(self, response):
         for form in response.css('input'):
             form_item = Form()
@@ -44,7 +35,6 @@ class FormSpider(scrapy.Spider):
             form_item['given_type'] = form.attrib.get('type',"")
             yield form_item
 
-
         for next_page in response.css('a::attr(href)'):
             if next_page is not None:
                 next_page_url = response.urljoin(next_page.extract())
@@ -53,4 +43,3 @@ class FormSpider(scrapy.Spider):
                 # setting class var allowed_domains list may also do this
                 # if you add this later use the should follow middle ware example here
                 # https://stackoverflow.com/questions/53547246/scrapy-follow-external-links-only
-                # yield response.follow(url, callback=self.parse,cb_kwargs=dict(depth=depth+1))
