@@ -5,20 +5,15 @@
 import socket
 import ssl
 
-target_url = 'expired.badssl.com'
+target_url = 'nta.go.jp'
 
-cert = ssl.get_server_certificate((target_url, 443))
-ctx = ssl.create_default_context()
-socks = socket.socket()
-sock = ctx.wrap_socket(socks, server_hostname=target_url)
-go = True
 try:
+    cert = ssl.get_server_certificate((target_url, 443))
+    ctx = ssl.create_default_context()
+    socks = socket.socket()
+    sock = ctx.wrap_socket(socks, server_hostname=target_url)
     sock.connect((target_url, 443))
-except ssl.SSLError as err:
-    print("Certificate is invalid (" + str(err.reason) + ")")
-    go = False
 
-if go:
     certs = sock.getpeercert()
 
     print(cert)
@@ -30,7 +25,7 @@ if go:
 
     for key in to_inspect:
         if key in subject:
-            print(str(key) + ": " + str(subject['countryName']))
+            print(str(key) + ": " + str(subject[key]))
 
     issuer = dict(x[0] for x in certs['issuer'])
     issued_by = issuer['commonName']
@@ -38,3 +33,6 @@ if go:
     print('Issued by: ' + issued_by)
 
     # Now just have to save it
+except ssl.SSLError as err:
+    print("Certificate is invalid (" + str(err.reason) + ")")
+    go = False
