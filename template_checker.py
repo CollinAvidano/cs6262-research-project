@@ -23,6 +23,6 @@ def check_templating(url):
     if '_W.configDomain = "www.weebly.com";' in mystr:
         return "Weebly"
 
-    # print(mystr)
 
-print (check_templating("https://urbanasacs.com/"))
+if __name__ == "__main__":
+    print(check_templating("https://urbanasacs.com/"))

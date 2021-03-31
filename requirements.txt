@@ -1,7 +1,6 @@
 pymysql
 python-nmap
-sublist3r
 scapy
 Scrapy
 dnspython
-
+tldextract

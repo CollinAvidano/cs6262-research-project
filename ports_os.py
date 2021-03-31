@@ -14,10 +14,10 @@ class port_os_results:
     active_ports_tcp=[]
     active_ports_udp=[]
 
-    def __init__(self, host_ip='', hostname='', protocol=[], active_ports_tcp=[], active_ports_udp=[]):
+    def __init__(self, host_ip='', hostname='', protocols=[], active_ports_tcp=[], active_ports_udp=[]):
         self.host_ip=host_ip
         self.hostname=hostname
-        self.protocol=protocol
+        self.protocols=protocols
         self.active_ports_tcp=active_ports_tcp
         self.active_ports_udp=active_ports_udp
 
@@ -27,7 +27,7 @@ def check_ports_os(ip):
 
     scanner.scan(ip, arguments='-O')
 
-    results = port_os_results(ip=ip, hostname=scanner[ip].hostname(), protocols=scanner[ip].all_protocols())
+    results = port_os_results(host_ip=ip, hostname=scanner[ip].hostname(), protocols=scanner[ip].all_protocols())
     for protocol in scanner[ip].all_protocols():
         active_ports = scanner[ip][protocol].keys()
         for port in active_ports:
