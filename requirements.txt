@@ -1,5 +1,7 @@
 pymysql
-nmap
+python-nmap
 sublist3r
 scapy
 Scrapy
+dnspython
+

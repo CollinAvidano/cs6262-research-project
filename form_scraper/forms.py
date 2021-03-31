@@ -6,12 +6,12 @@ import csv
 import tldextract
 
 # MUST BE CALLED WITH URL INCLUDING SCHEME (https://)
-def crawl_url(scan_url):
+def check_forms(url):
     process = CrawlerProcess(get_project_settings())
 
-    process.crawl('form_scraper', url=scan_url, depth_max=20)
+    process.crawl('form_scraper', url=url, depth_max=20)
     process.start()  # the script will block here until the crawling is finished
-    ext = tldextract.extract(scan_url)
+    ext = tldextract.extract(url)
     file_name = '.'.join((ext.domain,ext.suffix,'csv')) # basically just removing the scheme so it doesnt mess with file paths
 
     forms = []
@@ -21,9 +21,9 @@ def crawl_url(scan_url):
     os.remove(file_name)
     return forms
 
-def main():
-    results = crawl_url('https://amazon.com')
-    print(results)
+# def main():
+#     results = check_forms('https://amazon.com')
+#     print(results)
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()

@@ -5,26 +5,44 @@
 import socket
 import ssl
 
-target_url = 'google.com'
+# target_url = 'google.com'
 
-cert = ssl.get_server_certificate((target_url, 443))
-ctx = ssl.create_default_context()
-socks = socket.socket()
-sock = ctx.wrap_socket(socks, server_hostname=target_url)
-sock.connect((target_url, 443))
-certs = sock.getpeercert()
-subject = dict(x[0] for x in certs['subject'])
-country = subject['countryName']
-issued_to = subject['commonName']
-organization = subject['organizationName']
-location = subject['stateOrProvinceName']
-issuer = dict(x[0] for x in certs['issuer'])
-issued_by = issuer['commonName']
-print(cert)
-print('Country: ' + country)
-print('Issued to: ' + issued_to)
-print('Organization: ' + organization)
-print('Province: ' + location)
-print('Issued by: ' + issued_by)
+class cert_results:
+    organization=''
+    issued_to=''
+    issued_by=''
+    country=''
+    location=''
+
+    def __init__(self, organization='', issued_to='', issued_by='', country='', location=''):
+        self.organization=organization
+        self.issued_to=issued_to
+        self.issued_by=issued_by
+        self.country=country
+        self.location=location
+
+def check_cert(target_url):
+    cert = ssl.get_server_certificate((target_url, 443))
+    ctx = ssl.create_default_context()
+    socks = socket.socket()
+    sock = ctx.wrap_socket(socks, server_hostname=target_url)
+    sock.connect((target_url, 443))
+    certs = sock.getpeercert()
+    subject = dict(x[0] for x in certs['subject'])
+    country = subject['countryName']
+    issued_to = subject['commonName']
+    organization = subject['organizationName']
+    location = subject['stateOrProvinceName']
+    issuer = dict(x[0] for x in certs['issuer'])
+    issued_by = issuer['commonName']
+    return cert_results(organization, issued_to, issued_by, country, location)
+
+
+    # print(cert)
+    # print('Country: ' + country)
+    # print('Issued to: ' + issued_to)
+    # print('Organization: ' + organization)
+    # print('Province: ' + location)
+    # print('Issued by: ' + issued_by)
 
 # Now just have to save it
