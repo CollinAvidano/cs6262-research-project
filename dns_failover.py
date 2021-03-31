@@ -5,13 +5,13 @@ import sys
 # websites = ['amazon.com', 'gatech.edu']
 
 class dns_results:
-    listOfIPv4=[]
-    listOfIPv6=[]
+    ipv4=[]
+    ipv6=[]
     failover=0
 
-    def __init__(self, listOfIPv4=[], listOfIPv6=[], failover=0):
-        self.listOfIPv4=listOfIPv4
-        self.listOfIPv6=listOfIPv6
+    def __init__(self, ipv4=[], ipv6=[], failover=0):
+        self.ipv4=ipv4
+        self.ipv6=ipv6
         self.failover=failover
 
 def check_dns(url):
