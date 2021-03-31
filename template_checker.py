@@ -25,4 +25,4 @@ def check_templating(url):
 
     # print(mystr)
 
-print(check_templating("https://urbanasacs.com/"))
+print (check_templating("https://urbanasacs.com/"))

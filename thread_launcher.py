@@ -1,4 +1,4 @@
-import _thread
+import thread
 import time
 
 thread_queue = []

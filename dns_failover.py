@@ -15,29 +15,35 @@ class dns_results:
         self.failover=failover
 
 def check_dns(url):
-	# IPv4 dns addresses
-	try:
-		listOfIPv4 = dns.resolver.resolve(website, 'A')
-	except dns.resolver.NoAnswer:
-		listOfIPv4 = []
-	except dns.resolver.NXDOMAIN:
-		print('domain does not exist')
-		sys.exit(1)
+    # IPv4 dns addresses
+    listOfIPv4=[]
+    try:
+        listOfIPv4 = dns.resolver.resolve(url, 'A')
+    except dns.resolver.NoAnswer:
+        listOfIPv4 = []
+    except dns.resolver.NXDOMAIN:
+        print('domain does not exist')
+        sys.exit(1)
 
-	# IPv6 dns addreses
-	try:
-		listOfIPv6 = dns.resolver.resolve(website, 'AAAA')
-	except dns.resolver.NoAnswer:
-		listOfIPv6 = []
-	except dns.resolver.NXDOMAIN:
-		print('domain does not exist')
-		sys.exit(1)
+    # IPv6 dns addreses
+    listOfIPv6=[]
+    try:
+        listOfIPv6 = dns.resolver.resolve(url, 'AAAA')
+    except dns.resolver.NoAnswer:
+        listOfIPv6 = []
+    except dns.resolver.NXDOMAIN:
+        print('domain does not exist')
+        sys.exit(1)
 
     results = dns_results(failover=len(listOfIPv4) + len(listOfIPv6))
-	for ip in listOfIPv4:
+    for ip in listOfIPv4:
         results.listOfIPv4.append(ip.to_text())
 
     for ip in listOfIPv6:
         results.listOfIPv6.append(ip.to_text())
 
-	# print('Failover (number of servers):', len(listOfIPv4) + len(listOfIPv6))
+    return results
+    # print('Failover (number of servers):', len(listOfIPv4) + len(listOfIPv6))
+
+if __name__ == "__main__":
+    print(check_dns('amazon.com').__dict__)

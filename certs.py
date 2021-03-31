@@ -37,7 +37,6 @@ def check_cert(target_url):
     issued_by = issuer['commonName']
     return cert_results(organization, issued_to, issued_by, country, location)
 
-
     # print(cert)
     # print('Country: ' + country)
     # print('Issued to: ' + issued_to)
@@ -46,3 +45,6 @@ def check_cert(target_url):
     # print('Issued by: ' + issued_by)
 
 # Now just have to save it
+
+if __name__ == "__main__":
+    print(check_cert("google.com"))
