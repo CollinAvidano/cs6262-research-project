@@ -7,8 +7,8 @@ import tldextract
 
 # MUST BE CALLED WITH URL INCLUDING SCHEME (https://)
 def check_forms(url):
+    url = 'https://' + url
     process = CrawlerProcess(get_project_settings())
-
     process.crawl('form_scraper', url=url, depth_max=20)
     process.start()  # the script will block here until the crawling is finished
     ext = tldextract.extract(url)
@@ -21,9 +21,5 @@ def check_forms(url):
     os.remove(file_name)
     return forms
 
-# def main():
-#     results = check_forms('https://amazon.com')
-#     print(results)
-
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    print(check_forms('amazon.com'))
