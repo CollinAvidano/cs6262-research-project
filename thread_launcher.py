@@ -1,39 +1,21 @@
-import thread
+import concurrent.futures
 import time
 
-thread_queue = []
-completion_map = dict()
-
-def method1(gid):
-    print("thread 1-" + str(gid))
+def method(url):
+    print("thread-" + str(url))
     time.sleep(2)
-    enqueue_subsequent_task(method2, gid)
+    return url + 4
 
-def method2(gid):
-    print("thread 2-" + str(gid))
-    time.sleep(2)
-    print(gid)
-    completion_map[gid] = True
+url_list = [1, 2, 3, 4]
 
-def enqueue_subsequent_task(method, gid, args = ()):
-    thread_queue.append((method, (gid,) + args))
+############### TODO #################
+# read URLs in to url_list
+threads = []
 
-def add_task_group(gid, args = ()):
-    thread_queue.append((method1, (gid,) + args))
-    completion_map[gid] = False
+with concurrent.futures.ThreadPoolExecutor() as executor:
+    threads = [executor.submit(method, url) for url in url_list]
 
-add_task_group(1)
-add_task_group(2)
-
-try:
-    going = True
-    while going:
-        going = False
-        if len(thread_queue) > 0:
-            new_boi = thread_queue.pop(0)
-            _thread.start_new_thread(new_boi[0], new_boi[1])
-        for key in completion_map.keys():
-            if not completion_map[key]:
-                going = True
-except Exception as e:
-    print(e)
+############## TODO ##################
+# write to database
+for ret in threads:
+    print(ret.result())
