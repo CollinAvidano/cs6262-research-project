@@ -22,12 +22,18 @@ class port_os_results:
         self.active_ports_udp=active_ports_udp
 
 # this will give you OS version but you have to use root privledges (not sure how to make this work)
-def check_ports_os(ip):
+def check_ports_os(ip, ipv6=False):
+    print()
     scanner = nmap.PortScanner()
+    if ipv6 == True:
+        scanner.scan(ip, arguments='-6 -O')
+    else:
+        scanner.scan(ip, arguments='-O')
 
-    scanner.scan(ip, arguments='-O')
+    print(scanner)
 
     results = port_os_results(host_ip=ip, hostname=scanner[ip].hostname(), protocols=scanner[ip].all_protocols())
+    print(results)
     for protocol in scanner[ip].all_protocols():
         active_ports = scanner[ip][protocol].keys()
         for port in active_ports:
