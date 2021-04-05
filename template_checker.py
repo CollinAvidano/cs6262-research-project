@@ -1,12 +1,21 @@
 import urllib.request
+import requests
 import re
 
-def check_templating(url):
-    fp = urllib.request.urlopen(url)
-    mybytes = fp.read()
 
-    mystr = mybytes.decode("utf8")
-    fp.close()
+def check_templating(url):
+    url = 'https://' + url # Whoops I was stupid and forgot these much like forms.py require the scheme
+    resp = requests.get(url)
+
+    # headers = resp.headers # can be used to check decoding type and if its json or text
+
+    mystr = resp.text
+
+    # fp = urllib.request.urlopen(url)
+    # mybytes = fp.read()
+
+    # mystr = mybytes.decode("utf8")
+    # fp.close()
 
     metacheck = re.search('<meta\\s+name="generator"\\s+content=.*>', mystr);
 
@@ -23,6 +32,9 @@ def check_templating(url):
     if '_W.configDomain = "www.weebly.com";' in mystr:
         return "Weebly"
 
+    return "None" # please dear god return something even if its None
+
 
 if __name__ == "__main__":
-    print(check_templating("https://urbanasacs.com/"))
+    print(check_templating("urbanasacs.com"))
+    # print(check_templating("google.com"))

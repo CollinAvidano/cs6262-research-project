@@ -16,12 +16,14 @@ def scan_url(url):
     results['dns_result'] = dns_failover.check_dns(url).__dict__
     results['ip_to_open_ports'] = {}
     results['ip_to_traceroutes'] = {}
-    # for ip in results['dns_result']['ipv4']:
-    #     results['ip_to_open_ports'][ip] = ports_os.check_ports_os(ip, False).__dict__
-    #     results['ip_to_traceroutes'][ip] = traceroute.traceroute(ip)
-    for ip in results['dns_result']['ipv6']:
-        results['ip_to_open_ports'][ip] = ports_os.check_ports_os(ip, True).__dict__
-        results['ip_to_traceroutes'][ip] = traceroute.traceroute(ip)
+    print("\n\n IPV4 START")
+    for ip in results['dns_result']['ipv4']:
+        results['ip_to_open_ports'][ip] = ports_os.check_ports_os(ip, False).__dict__
+        results['ip_to_traceroutes'][ip] = traceroute.traceroute(ip, False)
+    # print("\n\n IPV6 START")
+    # for ip in results['dns_result']['ipv6']:
+    #     results['ip_to_open_ports'][ip] = ports_os.check_ports_os(ip, True).__dict__
+        # results['ip_to_traceroutes'][ip] = traceroute.traceroute(ip, True)
     results['cert_result'] = certs.check_cert(url).__dict__
     results['form_result'] = forms.check_forms(url)
     results['templating_result'] = template_checker.check_templating(url)
@@ -32,3 +34,4 @@ def scan_url(url):
 
 if __name__ == "__main__":
     print(scan_url('google.com'))
+    print(scan_url('urbanasacs.com'))
