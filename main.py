@@ -34,3 +34,4 @@ def scan_url(url):
 
 if __name__ == "__main__":
     print(scan_url('google.com'))
+    print(scan_url('urbanasacs.com'))

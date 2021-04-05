@@ -14,5 +14,6 @@ def check_traceroute(ip, ipv6=False):
     return result
 
 if __name__ == "__main__":
+    print(check_traceroute("108.177.122.113", False)
     # print(check_traceroute("2607:f8b0:4002:0808:0000:0000:0000:200e", True))
-    print(check_traceroute("2607:f8b0:4002:808::200e", True))
+    # print(check_traceroute("2607:f8b0:4002:808::200e", True))

@@ -4,21 +4,31 @@ from form_scraper.spiders.form_spider import FormSpider
 import os
 import csv
 import tldextract
+import subprocess
 
-# MUST BE CALLED WITH URL INCLUDING SCHEME (https://)
+def out(command):
+    output = subprocess.check_output(command, shell=True)
+    return output
+
 def check_forms(url):
     url = 'https://' + url
-    process = CrawlerProcess(get_project_settings())
-    process.crawl('form_scraper', url=url, depth_max=20)
-    process.start()  # the script will block here until the crawling is finished
+
     ext = tldextract.extract(url)
     file_name = '.'.join((ext.domain,ext.suffix,'csv')) # basically just removing the scheme so it doesnt mess with file paths
+
+    # oh yeah its jank... Do I care? No
+    command = "scrapy crawl -a url=" + url + " form_scraper"
+
+    print(out(command)) # actually runs scrapy from command line
 
     forms = []
     with open(file_name, newline='') as csvfile:
         reader = csv.reader(csvfile)
         forms = list(reader)
-    os.remove(file_name)
+
+    # defensive measure
+    if not "/" in file_name:
+        os.remove(file_name)
     return forms
 
 if __name__ == "__main__":

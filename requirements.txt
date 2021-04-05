@@ -5,3 +5,5 @@ Scrapy
 dnspython
 tldextract
 six
+requests
+urllib
