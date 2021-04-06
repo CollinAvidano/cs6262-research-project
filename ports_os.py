@@ -35,7 +35,7 @@ def check_ports_os(ip, ipv6=False):
     print('Command Line Arguments: ', scanner.command_line())
     print('Hosts to scan: ', scanner.all_hosts())
 
-    results = port_os_results(host_ip=ip, hostname=scanner[ip].hostname(), protocols=scanner[ip].all_protocols())
+    results = port_os_results(host_ip=ip, hostname=scanner[ip].hostname(), protocols=scanner[ip].all_protocols(), active_ports_tcp=[], active_ports_udp=[], operating_system=[])
     for protocol in scanner[ip].all_protocols():
         active_ports = scanner[ip][protocol].keys()
         for port in active_ports:

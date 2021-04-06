@@ -38,7 +38,6 @@ def check_dns(url):
     results = dns_results([], [], failover=len(listOfIPv4) + len(listOfIPv6))
     for ip in listOfIPv4:
         results.ipv4.append(ip.to_text())
-
     for ip in listOfIPv6:
         results.ipv6.append(ip.to_text())
 

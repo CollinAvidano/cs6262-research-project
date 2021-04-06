@@ -33,5 +33,7 @@ def scan_url(url):
 # I just dont care...
 
 if __name__ == "__main__":
-    print(scan_url('google.com'))
-    print(scan_url('urbanasacs.com'))
+#    print(scan_url('google.com'))
+#    print(scan_url('urbanasacs.com'))
+    scan_url('google.com')
+    scan_url('urbanasacs.com')
