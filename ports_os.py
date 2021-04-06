@@ -46,6 +46,7 @@ def check_ports_os(ip, ipv6=False):
             else:
                 pass
     print(results.__dict__)
+    #print('OS: ', scanner[ip]['osmatch'])
     return results
 
 if __name__ == "__main__":
