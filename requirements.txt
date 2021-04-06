@@ -6,4 +6,3 @@ dnspython
 tldextract
 six
 requests
-urllib
