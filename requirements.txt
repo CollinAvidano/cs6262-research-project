@@ -6,3 +6,7 @@ dnspython
 tldextract
 six
 requests
+aiohttp
+smtplibaio
+asyncio
+configparser
