@@ -2,20 +2,17 @@
 
 import socket
 import ssl
-
-target_url = 'google.com'
-
+import json
 import subprocess
+
 def out(command):
     output = subprocess.check_output(command, shell=True)
     return output
 
-def scan_url(url):
-    out("./cipherscan/cipherscan -j " + url + " > " + url)
-
-def main():
-    scan_url(target_url)
+def check_ciphers(url):
+    serialized_json = out("./cipherscan/cipherscan -j " + url)
+    json_dict = json.loads(serialized_json)
+    return json_dict
 
 if __name__ == "__main__":
-    main()
-
+    check_ciphers("google.com")

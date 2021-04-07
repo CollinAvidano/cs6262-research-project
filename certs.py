@@ -5,34 +5,43 @@
 import socket
 import ssl
 
-target_url = 'nta.go.jp'
+class cert_results:
+    organization=''
+    issued_to=''
+    issued_by=''
+    country=''
+    location=''
 
-try:
-    cert = ssl.get_server_certificate((target_url, 443))
-    ctx = ssl.create_default_context()
-    socks = socket.socket()
-    sock = ctx.wrap_socket(socks, server_hostname=target_url)
-    sock.connect((target_url, 443))
+    def __init__(self, organization='', issued_to='', issued_by='', country='', location=''):
+        self.organization=organization
+        self.issued_to=issued_to
+        self.issued_by=issued_by
+        self.country=country
+        self.location=location
 
-    certs = sock.getpeercert()
+def check_cert(target_url):
+  
+    try:
+        cert = ssl.get_server_certificate((target_url, 443))
+        ctx = ssl.create_default_context()
+        socks = socket.socket()
+        sock = ctx.wrap_socket(socks, server_hostname=target_url)
+        sock.connect((target_url, 443))
+        certs = sock.getpeercert()
 
-    print(cert)
+        subject = dict(x[0] for x in certs['subject'])
 
-    subject = dict(x[0] for x in certs['subject'])
+        country = subject['countryName'] if 'countryName' in subject else None
+        issued_to = subject['commonName'] if 'commonName' in subject else None
+        organization = subject['organizationName'] if 'organizationName' in subject else None
+        location = subject['stateOrProvinceName'] if 'stateOrProvinceName' in subject else None
 
-    to_inspect = {'countryName', 'commonName', 'organizationName', 'stateOrProvinceName'}
-    other_values = dict()
+        issuer = dict(x[0] for x in certs['issuer'])
+        issued_by = issuer['commonName']
 
-    for key in to_inspect:
-        if key in subject:
-            print(str(key) + ": " + str(subject[key]))
+        return cert_results(organization, issued_to, issued_by, country, location)
+    except ssl.SSLError as err:
+        return None
 
-    issuer = dict(x[0] for x in certs['issuer'])
-    issued_by = issuer['commonName']
-
-    print('Issued by: ' + issued_by)
-
-    # Now just have to save it
-except ssl.SSLError as err:
-    print("Certificate is invalid (" + str(err.reason) + ")")
-    go = False
+if __name__ == "__main__":
+    print(check_cert("google.com"))

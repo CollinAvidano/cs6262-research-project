@@ -3,56 +3,37 @@ import os
 import configparser
 import json
 import logging
+import dns_failover
+import ports_os
+import traceroute
+import certs
+import ciphersuite
+import forms
+import template_checker
 
+def scan_url(url):
+    results = {}
+    results['dns_result'] = dns_failover.check_dns(url).__dict__
+    results['ip_to_open_ports'] = {}
+    results['ip_to_traceroutes'] = {}
+    print("\n\n IPV4 START")
+    for ip in results['dns_result']['ipv4']:
+        results['ip_to_open_ports'][ip] = ports_os.check_ports_os(ip, False).__dict__
+        results['ip_to_traceroutes'][ip] = traceroute.traceroute(ip, False)
+    # print("\n\n IPV6 START")
+    # for ip in results['dns_result']['ipv6']:
+    #     results['ip_to_open_ports'][ip] = ports_os.check_ports_os(ip, True).__dict__
+        # results['ip_to_traceroutes'][ip] = traceroute.traceroute(ip, True)
+    results['cert_result'] = certs.check_cert(url).__dict__
+    results['form_result'] = forms.check_forms(url)
+    results['templating_result'] = template_checker.check_templating(url)
+    results['ciphers_result'] = ciphersuite.check_ciphers(url)
 
-def main():
-    self.config.read('scanner.ini')
-    connection = pymysql.connect(
-        host=self.config['sql']['host'],  # Database address
-        user=self.config['sql']['user'],  # database username
-        password=self.config['sql']['password'],  # Database password
-        db=self.config['sql']['db_name'],  # Name database
-        # charset = 'utf8 -- UTF-8 Unicode'
-    )
-
-import pymysql
-def store():
-    sql = 'insert into sites(domain,ip,password,pid,tel) values (%s,%s,%s,%s,%s)'
-    #Insert data
-    data = [
-        ('test1', 'male', '123456', 3, '110'),
-        ('test2', None, '123456', 2, '120'),
-    ]
-    #Splice and execute SQL statements
-    self.cursor.executemany(sql,data)
-    #Related write operations to be submitted
-    self.connection.commit()
-
-
-import nmap
-def scan(ip, port_str):
-    nm = nmap.PortScanner()
-    nm.scan('127.0.0.1', '22-443')
-    output = nm.scaninfo()
-
-import subprocess
-def out(command):
-    output = subprocess.check_output(command, shell=True)
-    return output
-
-def dig(fqdn):
-    output = str(out("dig +trace " + fqdn))
-    ns_records = re.findall(r"NS\\t(\S*?)\.\\n", output)
-    a_records = re.findall(r"A\\t(\S*?)\\n", output)
-
-    return ns_records, a_records
-
-import sublist3r
-def check_subdomains(fqdn)
-    subdomains = sublist3r.main(fqdn, no_threads=4, savefile=None, ports= None, silent=False, verbose= False, enable_bruteforce= False, engines=None)
-    return subdomains
-
-
+    return results
+# I just dont care...
 
 if __name__ == "__main__":
-    main()
+#    print(scan_url('google.com'))
+#    print(scan_url('urbanasacs.com'))
+    scan_url('google.com')
+    scan_url('urbanasacs.com')
