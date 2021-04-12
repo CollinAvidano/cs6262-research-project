@@ -54,7 +54,7 @@ cursor.execute("CREATE TABLE website_vulnerabilities.port (ip_addr VARCHAR(50), 
 cursor.execute("CREATE TABLE website_vulnerabilities.os (ip_addr VARCHAR(50), version VARCHAR(50), PRIMARY KEY (ip_addr, version), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
 cursor.execute("CREATE TABLE website_vulnerabilities.traceroute (ip_addr VARCHAR(50), sender_ttl VARCHAR(50), receiver_source VARCHAR(50), sender_time VARCHAR(50), receiver_time VARCHAR(50), PRIMARY KEY (ip_addr, sender_ttl), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
 cursor.execute("CREATE TABLE website_vulnerabilities.forms (url VARCHAR(50), class VARCHAR(50), type VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
-cursor.execute("CREATE TABLE website_vulnerabilities.template (url VARCHAR(50) PRIMARY KEY, temp VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
+cursor.execute("CREATE TABLE website_vulnerabilities.template (url VARCHAR(50) PRIMARY KEY, temp VARCHAR(500), FOREIGN KEY(url) REFERENCES website(url))")
 
 for ret in threads:
     #print(ret.result())

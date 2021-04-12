@@ -41,7 +41,7 @@ def check_cert(target_url):
 
         return cert_results(organization, issued_to, issued_by, country, location)
     except ssl.SSLError as err:
-        return None
+        return cert_results("None", "None", "None", "None", "None")
 
 if __name__ == "__main__":
     print(check_cert("google.com"))

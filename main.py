@@ -24,7 +24,7 @@ def scan_url(url):
         print("\n\n IPV4 START")
         for ip in results['dns_result']['ipv4']:
             results['ip_to_open_ports'][ip] = ports_os.check_ports_os(ip, False).__dict__
-            results['ip_to_traceroutes'][ip] = traceroute.traceroute(ip, False)
+            results['ip_to_traceroutes'][ip] = traceroute.check_traceroute(ip, False)
         # print("\n\n IPV6 START")
         # for ip in results['dns_result']['ipv6']:
         #     results['ip_to_open_ports'][ip] = ports_os.check_ports_os(ip, True).__dict__
