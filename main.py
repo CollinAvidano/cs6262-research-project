@@ -81,9 +81,9 @@ if __name__ == "__main__":
                 sql = "INSERT INTO website_vulnerabilities.port (ip_addr, port_number, protocol) VALUES (%s,%s,%s)"
                 val = (ip, udp_port, 'udp',)
                 cursor.execute(sql, val)
-            for traceroute in results['ip_to_traceroutes'][ip]:
+            for trace in results['ip_to_traceroutes'][ip]:
                 sql = "INSERT INTO website_vulnerabilities.traceroute (ip_addr, sender_ttl, receiver_source, sender_time, receiver_time) VALUES (%s,%s,%s,%s,%s)"
-                val = (ip, traceroute['ttl'], traceroute['src'], traceroute['time_sent'], traceroute['time_received'],)
+                val = (ip, trace['ttl'], trace['src'], trace['time_sent'], trace['time_received'],)
                 cursor.execute(sql, val)
             
         for ip in results['dns_result']['ipv6']:
@@ -100,8 +100,8 @@ if __name__ == "__main__":
             val = (website, cipher['cipher'],)
             cursor.execute(sql, val)
 
-        forms = results['form_result'][1:]
-        for form in results['form_result'] :
+        forms_list = results['form_result'][1:]
+        for form in forms_list:
             sql = "INSERT INTO website_vulnerabilities.forms (url, class, type) VALUES (%s,%s,%s)"
             val = (website, form[0], form[1],)
             cursor.execute(sql, val)
