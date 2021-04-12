@@ -29,7 +29,8 @@ def scan_url(url):
         # for ip in results['dns_result']['ipv6']:
         #     results['ip_to_open_ports'][ip] = ports_os.check_ports_os(ip, True).__dict__
             # results['ip_to_traceroutes'][ip] = traceroute.traceroute(ip, True)
-        results['cert_result'] = certs.check_cert(url).__dict__
+        cert = certs.check_cert(url)
+        results['cert_result'] = cert.__dict__ if cert is not None else None
         results['form_result'] = forms.check_forms(url)
         results['templating_result'] = template_checker.check_templating(url)
         results['ciphers_result'] = ciphersuite.check_ciphers(url)

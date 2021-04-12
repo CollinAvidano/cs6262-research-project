@@ -1,11 +1,15 @@
 import urllib.request
 import requests
 import re
-
+import ssl
 
 def check_templating(url):
     url = 'https://' + url # Whoops I was stupid and forgot these much like forms.py require the scheme
-    resp = requests.get(url)
+    resp = None
+    try:
+        resp = requests.get(url)
+    except ssl.SSLError as e:
+        return "None"
 
     # headers = resp.headers # can be used to check decoding type and if its json or text
 
