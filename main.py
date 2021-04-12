@@ -27,7 +27,7 @@ def scan_url(url):
     #     results['ip_to_traceroutes'][ip] = traceroute.traceroute(ip, True)
     results['cert_result'] = certs.check_cert(url).__dict__
     results['form_result'] = forms.check_forms(url)
-    #results['templating_result'] = template_checker.check_templating(url)
+    results['templating_result'] = template_checker.check_templating(url)
     results['ciphers_result'] = ciphersuite.check_ciphers(url)
     print(results)
     return results
@@ -53,13 +53,11 @@ if __name__ == "__main__":
     cursor.execute("CREATE TABLE website_vulnerabilities.port (ip_addr VARCHAR(50), port_number VARCHAR(10), protocol VARCHAR(50), PRIMARY KEY (ip_addr, port_number), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
     cursor.execute("CREATE TABLE website_vulnerabilities.os (ip_addr VARCHAR(50), version VARCHAR(50), PRIMARY KEY (ip_addr, version), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
     cursor.execute("CREATE TABLE website_vulnerabilities.traceroute (ip_addr VARCHAR(50), sender_ttl VARCHAR(50), receiver_source VARCHAR(50), sender_time VARCHAR(50), receiver_time VARCHAR(50), PRIMARY KEY (ip_addr, sender_ttl), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
-    cursor.execute("CREATE TABLE website_vulnerabilities.forms (url VARCHAR(50), class VARCHAR(50), type VARCHAR(50), FOREIGN KEY(URL) REFERENCES website(url))")
-    websites = ['google.com']#, 'urbanasacs.com', 'twitter.com']
+    cursor.execute("CREATE TABLE website_vulnerabilities.forms (url VARCHAR(50), class VARCHAR(50), type VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
+    cursor.execute("CREATE TABLE website_vulnerabilities.template (url VARCHAR(50) PRIMARY KEY, temp VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
+    websites = ['google.com', 'twitter.com', 'urbanasacs.com' ]
     
     for website in websites: 
-        #print(scan_url(website))
-        #print(website, results['dns_result'])
-        #print(results['ip_to_open_ports'])
         results = scan_url(website)
 
         sql = "INSERT INTO website_vulnerabilities.website (url) VALUES (%s)"
@@ -103,14 +101,13 @@ if __name__ == "__main__":
             cursor.execute(sql, val)
 
         forms = results['form_result'][1:]
-        print(forms)
         for form in results['form_result'] :
             sql = "INSERT INTO website_vulnerabilities.forms (url, class, type) VALUES (%s,%s,%s)"
             val = (website, form[0], form[1],)
             cursor.execute(sql, val)
-        #print("CIPHER RESULTS!!!",results['ciphers_result']['ciphersuite'])
 
+        sql = "INSERT INTO website_vulnerabilities.template (url, temp) VALUES (%s,%s)"
+        val = (website, results['templating_result'],)
+        cursor.execute(sql, val)
 
         db.commit()
-
-
