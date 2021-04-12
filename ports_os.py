@@ -49,7 +49,7 @@ def check_ports_os(ip, ipv6=False):
         print(results.__dict__)
         #print('OS: ', scanner[ip]['osmatch'])
     except:
-        results = port_os_results(host_ip=ip, hostname="None/Invalid (Error)", prototocls=["None"], active_ports_tcp=[], active_ports_udp=[], operating_system=[])
+        results = port_os_results(host_ip=ip, hostname="None/Invalid (Error)", protocols=["None"], active_ports_tcp=[], active_ports_udp=[], operating_system=[])
     return results
 
 if __name__ == "__main__":
