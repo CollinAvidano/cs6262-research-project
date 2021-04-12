@@ -1,6 +1,7 @@
 import concurrent.futures
 import time
 import main
+import mysql
 
 import csv
 from collections import defaultdict
@@ -28,7 +29,7 @@ url_list = columns['Sites'] ##List
 threads = []
 
 with concurrent.futures.ThreadPoolExecutor(max_workers = 8) as executor: ##Limit max number of threads to 8
-    threads = [executor.submit(main.scan_url, url) for url in url_list]
+    threads = [(url, executor.submit(main.scan_url, url)) for url in url_list]
 
 ############## TODO ##################
 # write to database
@@ -57,7 +58,8 @@ cursor.execute("CREATE TABLE website_vulnerabilities.template (url VARCHAR(50) P
 
 for ret in threads:
     #print(ret.result())
-    results = ret.result()
+    results = ret[1].result()
+    website = ret[0]
 
     sql = "INSERT INTO website_vulnerabilities.website (url) VALUES (%s)"
     val = (website,)
