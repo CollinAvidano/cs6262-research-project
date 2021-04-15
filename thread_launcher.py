@@ -50,8 +50,11 @@ cursor.execute("CREATE TABLE website_vulnerabilities.template (url VARCHAR(50) P
 # read URLs in to url_list
 threads = []
 
+start_index = 0
+number = 1000
+
 with concurrent.futures.ThreadPoolExecutor(max_workers = 8) as executor: ##Limit max number of threads to 8
-    for i in range(0, len(url_list)):
+    for i in range(start_index, start_index + number):
         executor.submit(main.scan_url, url_list[i], cursor, i)
 
 ############## TODO ##################
