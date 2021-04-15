@@ -15,7 +15,7 @@ import ssl
 from email.message import EmailMessage
 from smtplib import SMTP, SMTP_SSL
 
-def scan_url(url, cursor):
+def scan_url(url, cursor, index):
     results = {}
     try:
         results['dns_result'] = dns_failover.check_dns(url).__dict__
@@ -35,6 +35,7 @@ def scan_url(url, cursor):
         results['templating_result'] = template_checker.check_templating(url)
         results['ciphers_result'] = ciphersuite.check_ciphers(url)
 
+        print(f"*******************Finished with {url} (#{index})**************************")
         commit(url, results, cursor)
     except:
         error = traceback.format_exc()
@@ -136,7 +137,7 @@ def commit(website, results, cursor):
         print(f"On URL:{ret[0]}")
         print(f"ret[1].result() is None:{ret[1].result() is None}")
         print(f"ret[1].result() is None:{ret[1].result()}")
-        raise
+        # raise
 
 # if __name__ == "__main__":
 #     db = mysql.connector.connect(
