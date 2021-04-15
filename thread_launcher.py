@@ -24,16 +24,6 @@ with open('rando_site.csv') as f:
 
 url_list = columns['Sites'] ##List
 
-############### TODO #################
-# read URLs in to url_list
-threads = []
-
-with concurrent.futures.ThreadPoolExecutor(max_workers = 8) as executor: ##Limit max number of threads to 8
-    threads = [(url, executor.submit(main.scan_url, url)) for url in url_list]
-
-############## TODO ##################
-# write to database
-
 db = mysql.connector.connect(
     host="localhost",
     user="root",
@@ -56,67 +46,77 @@ cursor.execute("CREATE TABLE website_vulnerabilities.traceroute (ip_addr VARCHAR
 cursor.execute("CREATE TABLE website_vulnerabilities.forms (url VARCHAR(50), class VARCHAR(500), type VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
 cursor.execute("CREATE TABLE website_vulnerabilities.template (url VARCHAR(50) PRIMARY KEY, temp VARCHAR(500), FOREIGN KEY(url) REFERENCES website(url))")
 
-for ret in threads:
-    try:
-        #print(ret.result())
-        results = ret[1].result()
-        website = ret[0]
+############### TODO #################
+# read URLs in to url_list
+threads = []
 
-        sql = "INSERT INTO website_vulnerabilities.website (url) VALUES (%s)"
-        val = (website,)
-        cursor.execute(sql, val)
+with concurrent.futures.ThreadPoolExecutor(max_workers = 8) as executor: ##Limit max number of threads to 8
+    threads = [(url, executor.submit(main.scan_url, url, cursor)) for url in url_list]
 
-        sql = "INSERT INTO website_vulnerabilities.sub_domain (parent_url, child_url) VALUES (%s,%s)"
-        val = (website, website,)
-        cursor.execute(sql, val)
+############## TODO ##################
+# write to database
 
-        for ip in results['dns_result']['ipv4']:
-            sql = "INSERT INTO website_vulnerabilities.ip_address (url, ip_address, ip_version) VALUES (%s,%s,%s)"
-            val = (website, ip, 'ipv4',)
-            cursor.execute(sql, val)
+# for ret in threads:
+#     try:
+#         #print(ret.result())
+#         results = ret[1].result()
+#         website = ret[0]
 
-            for tcp_port in results['ip_to_open_ports'][ip]['active_ports_tcp']:
-                sql = "INSERT INTO website_vulnerabilities.port (ip_addr, port_number, protocol) VALUES (%s,%s,%s)"
-                val = (ip, tcp_port, 'tcp',)
-                cursor.execute(sql, val)
-            for udp_port in results['ip_to_open_ports'][ip]['active_ports_udp']:
-                sql = "INSERT INTO website_vulnerabilities.port (ip_addr, port_number, protocol) VALUES (%s,%s,%s)"
-                val = (ip, udp_port, 'udp',)
-                cursor.execute(sql, val)
-            for trace in results['ip_to_traceroutes'][ip]:
-                sql = "INSERT INTO website_vulnerabilities.traceroute (ip_addr, sender_ttl, receiver_source, sender_time, receiver_time) VALUES (%s,%s,%s,%s,%s)"
-                val = (ip, trace['ttl'], trace['src'], trace['time_sent'], trace['time_received'],)
-                cursor.execute(sql, val)
+#         sql = "INSERT INTO website_vulnerabilities.website (url) VALUES (%s)"
+#         val = (website,)
+#         cursor.execute(sql, val)
 
-        for ip in results['dns_result']['ipv6']:
-            sql = "INSERT INTO website_vulnerabilities.ip_address (url, ip_address, ip_version) VALUES (%s,%s,%s)"
-            val = (website, ip, 'ipv6',)
-            cursor.execute(sql, val)
+#         sql = "INSERT INTO website_vulnerabilities.sub_domain (parent_url, child_url) VALUES (%s,%s)"
+#         val = (website, website,)
+#         cursor.execute(sql, val)
 
-        sql = "INSERT INTO website_vulnerabilities.cert (url, issued_to, issued_by, organization, country, location) VALUES (%s,%s,%s,%s,%s,%s)"
-        val = (website,results['cert_result']['issued_to'], results['cert_result']['issued_by'],results['cert_result']['organization'],results['cert_result']['country'],results['cert_result']['location'],)
-        cursor.execute(sql, val)
+#         for ip in results['dns_result']['ipv4']:
+#             sql = "INSERT INTO website_vulnerabilities.ip_address (url, ip_address, ip_version) VALUES (%s,%s,%s)"
+#             val = (website, ip, 'ipv4',)
+#             cursor.execute(sql, val)
 
-        for cipher in results['ciphers_result']['ciphersuite']:
-            sql = "INSERT INTO website_vulnerabilities.cipher (url, cipher) VALUES (%s,%s)"
-            val = (website, cipher['cipher'],)
-            cursor.execute(sql, val)
+#             for tcp_port in results['ip_to_open_ports'][ip]['active_ports_tcp']:
+#                 sql = "INSERT INTO website_vulnerabilities.port (ip_addr, port_number, protocol) VALUES (%s,%s,%s)"
+#                 val = (ip, tcp_port, 'tcp',)
+#                 cursor.execute(sql, val)
+#             for udp_port in results['ip_to_open_ports'][ip]['active_ports_udp']:
+#                 sql = "INSERT INTO website_vulnerabilities.port (ip_addr, port_number, protocol) VALUES (%s,%s,%s)"
+#                 val = (ip, udp_port, 'udp',)
+#                 cursor.execute(sql, val)
+#             for trace in results['ip_to_traceroutes'][ip]:
+#                 sql = "INSERT INTO website_vulnerabilities.traceroute (ip_addr, sender_ttl, receiver_source, sender_time, receiver_time) VALUES (%s,%s,%s,%s,%s)"
+#                 val = (ip, trace['ttl'], trace['src'], trace['time_sent'], trace['time_received'],)
+#                 cursor.execute(sql, val)
 
-        forms_list = results['form_result'][1:]
-        for form in forms_list:
-            sql = "INSERT INTO website_vulnerabilities.forms (url, class, type) VALUES (%s,%s,%s)"
-            val = (website, form[0], form[1],)
-            cursor.execute(sql, val)
+#         for ip in results['dns_result']['ipv6']:
+#             sql = "INSERT INTO website_vulnerabilities.ip_address (url, ip_address, ip_version) VALUES (%s,%s,%s)"
+#             val = (website, ip, 'ipv6',)
+#             cursor.execute(sql, val)
 
-        sql = "INSERT INTO website_vulnerabilities.template (url, temp) VALUES (%s,%s)"
-        val = (website, results['templating_result'],)
-        cursor.execute(sql, val)
+#         sql = "INSERT INTO website_vulnerabilities.cert (url, issued_to, issued_by, organization, country, location) VALUES (%s,%s,%s,%s,%s,%s)"
+#         val = (website,results['cert_result']['issued_to'], results['cert_result']['issued_by'],results['cert_result']['organization'],results['cert_result']['country'],results['cert_result']['location'],)
+#         cursor.execute(sql, val)
 
-        db.commit()
-    except:
-        print(f"ret is None:{ret is None}")
-        print(f"On URL:{ret[0]}")
-        print(f"ret[1].result() is None:{ret[1].result() is None}")
-        print(f"ret[1].result() is None:{ret[1].result()}")
-        raise
+#         for cipher in results['ciphers_result']['ciphersuite']:
+#             sql = "INSERT INTO website_vulnerabilities.cipher (url, cipher) VALUES (%s,%s)"
+#             val = (website, cipher['cipher'],)
+#             cursor.execute(sql, val)
+
+#         forms_list = results['form_result'][1:]
+#         for form in forms_list:
+#             sql = "INSERT INTO website_vulnerabilities.forms (url, class, type) VALUES (%s,%s,%s)"
+#             val = (website, form[0], form[1],)
+#             cursor.execute(sql, val)
+
+#         sql = "INSERT INTO website_vulnerabilities.template (url, temp) VALUES (%s,%s)"
+#         val = (website, results['templating_result'],)
+#         cursor.execute(sql, val)
+
+#         db.commit()
+#     except:
+#         print(f"ret is None:{ret is None}")
+#         print(f"On URL:{ret[0]}")
+#         print(f"ret[1].result() is None:{ret[1].result() is None}")
+#         print(f"ret[1].result() is None:{ret[1].result()}")
+#         raise
 
