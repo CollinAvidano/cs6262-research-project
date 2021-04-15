@@ -14,6 +14,7 @@ import traceback
 import ssl
 from email.message import EmailMessage
 from smtplib import SMTP, SMTP_SSL
+import asyncio
 
 def scan_url(url, cursor, index):
     results = {}
@@ -79,7 +80,10 @@ def send_alerts(url, error):
         client.login(config['alert']['sender-email'], config['alert']['sender-pasword'])
         client.sendmail(config['alert']['sender-email'], recipients, message.as_string())
 
+lock = asyncio.Lock()
+
 def commit(website, results, cursor):
+    await lock.acquire()
     try:
         sql = "INSERT INTO website_vulnerabilities.website (url) VALUES (%s)"
         val = (website,)
@@ -137,7 +141,9 @@ def commit(website, results, cursor):
         print(f"On URL:{website}")
         print(f"ret[1].result() is None:{results is None}")
         print(f"ret[1].result() is None:{results}")
-        # raise
+        # raise    
+    finally:
+        lock.release()
 
 # if __name__ == "__main__":
 #     db = mysql.connector.connect(
