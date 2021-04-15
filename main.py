@@ -133,10 +133,10 @@ def commit(website, results, cursor):
 
         db.commit()
     except:
-        print(f"ret is None:{ret is None}")
-        print(f"On URL:{ret[0]}")
-        print(f"ret[1].result() is None:{ret[1].result() is None}")
-        print(f"ret[1].result() is None:{ret[1].result()}")
+        #print(f"ret is None:{ret is None}")
+        print(f"On URL:{website}")
+        print(f"ret[1].result() is None:{results is None}")
+        print(f"ret[1].result() is None:{results}")
         # raise
 
 # if __name__ == "__main__":
