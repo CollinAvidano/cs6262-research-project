@@ -115,10 +115,24 @@ cursor.execute("CREATE TABLE website_vulnerabilities.template (url VARCHAR(50) P
 start_index = 0
 number = 16
 
-with concurrent.futures.ThreadPoolExecutor(max_workers = 8) as executor: ##Limit max number of threads to 8
-    for i in range(start_index, start_index + number):
-        future = executor.submit(main.scan_url, url_list[i], cursor, i)
-        future.add_done_callback(commit)
+# with concurrent.futures.ThreadPoolExecutor(max_workers = 8) as executor: ##Limit max number of threads to 8
+    # for i in range(start_index, start_index + number):
+        # future = executor.submit(main.scan_url, url_list[i], cursor, i)
+        # future.add_done_callback(commit)
+
+idx = 0
+running = []
+with concurrent.futures.ThreadPoolExecutor() as executor: ##Limit max number of threads to 8
+    while (idx < len(url_list) and len(running) != 0)
+        while len(running < 8 and idx < len(url_list)):
+            running.append(executor.submit(main.scan_url, url_list[idx], cursor, idx))
+            idx += 1
+        r = 0
+        while (r < len(running)):
+            if running[r].done():
+                commit(running[r])
+                del running[r]
+            r += 1
 
     #for i in range(start_index, start_index + number):
         #loop.run_in_executor(executor, main.scan_url, url_list[i], cursor, i)
