@@ -16,7 +16,7 @@ from email.message import EmailMessage
 from smtplib import SMTP, SMTP_SSL
 import asyncio
 
-def scan_url(url, cursor, index):
+async def scan_url(url, cursor, index):
     results = {}
     try:
         results['dns_result'] = dns_failover.check_dns(url).__dict__
@@ -37,7 +37,7 @@ def scan_url(url, cursor, index):
         results['ciphers_result'] = ciphersuite.check_ciphers(url)
 
         print(f"*******************Finished with {url} (#{index})**************************")
-        commit(url, results, cursor)
+        await commit(url, results, cursor)
     except:
         error = traceback.format_exc()
         if os.path.exists("alerts.ini"):
@@ -70,7 +70,7 @@ def send_alerts(url, error):
     message.add_header("To", str(recipients))
     message.add_header("Subject", subject)
     message.add_header("Content-type", "text/plain", charset="utf-8")
-    message.set_content(content)
+#    message.set_content(content)
 
     # Send the alert:
     # has to use ssl to do simple mail transfer protocol with google which yeah the idea of using stmp is insecure so why not
@@ -82,8 +82,20 @@ def send_alerts(url, error):
 
 lock = asyncio.Lock()
 
-def commit(website, results, cursor):
+async def commit(website, results, cursor):
+    print("ACQUIRING LOCK");
+    print("ACQUIRING LOCK");
+    print("ACQUIRING LOCK");
+    print("ACQUIRING LOCK");
+    print("ACQUIRING LOCK");
+    print("ACQUIRING LOCK");
     await lock.acquire()
+    print("GOT LOCK");
+    print("GOT LOCK");
+    print("GOT LOCK");
+    print("GOT LOCK");
+    print("GOT LOCK");
+    print("GOT LOCK");
     try:
         sql = "INSERT INTO website_vulnerabilities.website (url) VALUES (%s)"
         val = (website,)
@@ -145,32 +157,34 @@ def commit(website, results, cursor):
     finally:
         lock.release()
 
-# if __name__ == "__main__":
-#     db = mysql.connector.connect(
-#         host="localhost",
-#         user="root",
-#         password="root",
-#     )
+if __name__ == "__main__":
+    db = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+    )
 
-#     cursor = db.cursor() #object to execute SQL statements and interact with SQL server
+    cursor = db.cursor() #object to execute SQL statements and interact with SQL server
 
-#     cursor.execute("DROP DATABASE IF EXISTS website_vulnerabilities")
-#     cursor.execute("CREATE DATABASE website_vulnerabilities")
+    cursor.execute("DROP DATABASE IF EXISTS website_vulnerabilities")
+    cursor.execute("CREATE DATABASE website_vulnerabilities")
 
-#     cursor.execute("CREATE TABLE website_vulnerabilities.website (url VARCHAR(50) PRIMARY KEY)")
-#     cursor.execute("CREATE TABLE website_vulnerabilities.sub_domain (parent_url VARCHAR(50), child_url VARCHAR(50) PRIMARY KEY, FOREIGN KEY(parent_url) REFERENCES website(url))")
-#     cursor.execute("CREATE TABLE website_vulnerabilities.ip_address (url VARCHAR(50), ip_address VARCHAR(50) PRIMARY KEY, ip_version VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
-#     cursor.execute("CREATE TABLE website_vulnerabilities.cert (url VARCHAR(50), issued_to VARCHAR(50) PRIMARY KEY, issued_by VARCHAR(50), organization VARCHAR(50), country VARCHAR(50), location VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
-#     cursor.execute("CREATE TABLE website_vulnerabilities.cipher (url VARCHAR(50), cipher VARCHAR(50), PRIMARY KEY(url, cipher), FOREIGN KEY(url) REFERENCES website(url) )")
-#     cursor.execute("CREATE TABLE website_vulnerabilities.port (ip_addr VARCHAR(50), port_number VARCHAR(10), protocol VARCHAR(50), PRIMARY KEY (ip_addr, port_number), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
-#     cursor.execute("CREATE TABLE website_vulnerabilities.os (ip_addr VARCHAR(50), version VARCHAR(50), PRIMARY KEY (ip_addr, version), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
-#     cursor.execute("CREATE TABLE website_vulnerabilities.traceroute (ip_addr VARCHAR(50), sender_ttl VARCHAR(50), receiver_source VARCHAR(50), sender_time VARCHAR(50), receiver_time VARCHAR(50), PRIMARY KEY (ip_addr, sender_ttl), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
-#     cursor.execute("CREATE TABLE website_vulnerabilities.forms (url VARCHAR(50), class VARCHAR(50), type VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
-#     cursor.execute("CREATE TABLE website_vulnerabilities.template (url VARCHAR(50) PRIMARY KEY, temp VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
-#     websites = ['google.com', 'twitter.com', 'urbanasacs.com' ]
+    cursor.execute("CREATE TABLE website_vulnerabilities.website (url VARCHAR(50) PRIMARY KEY)")
+    cursor.execute("CREATE TABLE website_vulnerabilities.sub_domain (parent_url VARCHAR(50), child_url VARCHAR(50) PRIMARY KEY, FOREIGN KEY(parent_url) REFERENCES website(url))")
+    cursor.execute("CREATE TABLE website_vulnerabilities.ip_address (url VARCHAR(50), ip_address VARCHAR(50) PRIMARY KEY, ip_version VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
+    cursor.execute("CREATE TABLE website_vulnerabilities.cert (url VARCHAR(50), issued_to VARCHAR(50) PRIMARY KEY, issued_by VARCHAR(50), organization VARCHAR(50), country VARCHAR(50), location VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
+    cursor.execute("CREATE TABLE website_vulnerabilities.cipher (url VARCHAR(50), cipher VARCHAR(50), PRIMARY KEY(url, cipher), FOREIGN KEY(url) REFERENCES website(url) )")
+    cursor.execute("CREATE TABLE website_vulnerabilities.port (ip_addr VARCHAR(50), port_number VARCHAR(10), protocol VARCHAR(50), PRIMARY KEY (ip_addr, port_number), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
+    cursor.execute("CREATE TABLE website_vulnerabilities.os (ip_addr VARCHAR(50), version VARCHAR(50), PRIMARY KEY (ip_addr, version), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
+    cursor.execute("CREATE TABLE website_vulnerabilities.traceroute (ip_addr VARCHAR(50), sender_ttl VARCHAR(50), receiver_source VARCHAR(50), sender_time VARCHAR(50), receiver_time VARCHAR(50), PRIMARY KEY (ip_addr, sender_ttl), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
+    cursor.execute("CREATE TABLE website_vulnerabilities.forms (url VARCHAR(50), class VARCHAR(50), type VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
+    cursor.execute("CREATE TABLE website_vulnerabilities.template (url VARCHAR(50) PRIMARY KEY, temp VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
+    websites = ['google.com', 'twitter.com', 'urbanasacs.com' ]
 
-#     for website in websites:
-#         results = scan_url(website)
+    loop=asyncio.get_event_loop();
+    for website in websites:
+         loop.run_until_complete(scan_url(website, cursor, 0))
+    loop.close();
 
 #         sql = "INSERT INTO website_vulnerabilities.website (url) VALUES (%s)"
 #         val = (website,)
