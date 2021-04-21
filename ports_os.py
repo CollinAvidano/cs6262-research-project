@@ -35,18 +35,21 @@ def check_ports_os(ip, ipv6=False):
     print('Command Line Arguments: ', scanner.command_line())
     print('Hosts to scan: ', scanner.all_hosts())
 
-    results = port_os_results(host_ip=ip, hostname=scanner[ip].hostname(), protocols=scanner[ip].all_protocols(), active_ports_tcp=[], active_ports_udp=[], operating_system=[])
-    for protocol in scanner[ip].all_protocols():
-        active_ports = scanner[ip][protocol].keys()
-        for port in active_ports:
-            if protocol == 'tcp':
-                results.active_ports_tcp.append(port)
-            elif protocol == 'udp':
-                results.active_ports_udp.append(port)
-            else:
-                pass
-    print(results.__dict__)
-    #print('OS: ', scanner[ip]['osmatch'])
+    try:
+        results = port_os_results(host_ip=ip, hostname=scanner[ip].hostname(), protocols=scanner[ip].all_protocols(), active_ports_tcp=[], active_ports_udp=[], operating_system=[])
+        for protocol in scanner[ip].all_protocols():
+            active_ports = scanner[ip][protocol].keys()
+            for port in active_ports:
+                if protocol == 'tcp':
+                    results.active_ports_tcp.append(port)
+                elif protocol == 'udp':
+                    results.active_ports_udp.append(port)
+                else:
+                    pass
+        print(results.__dict__)
+        #print('OS: ', scanner[ip]['osmatch'])
+    except:
+        results = port_os_results(host_ip=ip, hostname="None/Invalid (Error)", protocols=["None"], active_ports_tcp=[], active_ports_udp=[], operating_system=[])
     return results
 
 if __name__ == "__main__":

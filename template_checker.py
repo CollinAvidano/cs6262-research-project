@@ -8,7 +8,7 @@ def check_templating(url):
     resp = None
     try:
         resp = requests.get(url)
-    except ssl.SSLError as e:
+    except:
         return "None"
 
     # headers = resp.headers # can be used to check decoding type and if its json or text
