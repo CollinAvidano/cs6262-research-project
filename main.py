@@ -70,7 +70,7 @@ def send_alerts(url, error):
     message.add_header("To", str(recipients))
     message.add_header("Subject", subject)
     message.add_header("Content-type", "text/plain", charset="utf-8")
-#    message.set_content(content)
+    message.set_content(content)
 
     # Send the alert:
     # has to use ssl to do simple mail transfer protocol with google which yeah the idea of using stmp is insecure so why not

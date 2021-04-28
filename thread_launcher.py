@@ -98,40 +98,41 @@ db = mysql.connector.connect(
 
 cursor = db.cursor() #object to execute SQL statements and interact with SQL server
 
-cursor.execute("DROP DATABASE IF EXISTS website_vulnerabilities")
-cursor.execute("CREATE DATABASE website_vulnerabilities")
+#cursor.execute("DROP DATABASE IF EXISTS website_vulnerabilities")
+#cursor.execute("CREATE DATABASE website_vulnerabilities")
 
-cursor.execute("CREATE TABLE website_vulnerabilities.website (url VARCHAR(50) PRIMARY KEY)")
-cursor.execute("CREATE TABLE website_vulnerabilities.sub_domain (parent_url VARCHAR(50), child_url VARCHAR(50) PRIMARY KEY, FOREIGN KEY(parent_url) REFERENCES website(url))")
-cursor.execute("CREATE TABLE website_vulnerabilities.ip_address (url VARCHAR(50), ip_address VARCHAR(50) PRIMARY KEY, ip_version VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
-cursor.execute("CREATE TABLE website_vulnerabilities.cert (url VARCHAR(50), issued_to VARCHAR(50), issued_by VARCHAR(50), organization VARCHAR(50), country VARCHAR(50), location VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
-cursor.execute("CREATE TABLE website_vulnerabilities.cipher (url VARCHAR(50), cipher VARCHAR(50), PRIMARY KEY(url, cipher), FOREIGN KEY(url) REFERENCES website(url) )")
-cursor.execute("CREATE TABLE website_vulnerabilities.port (ip_addr VARCHAR(50), port_number VARCHAR(10), protocol VARCHAR(50), PRIMARY KEY (ip_addr, port_number), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
-cursor.execute("CREATE TABLE website_vulnerabilities.os (ip_addr VARCHAR(50), version VARCHAR(50), PRIMARY KEY (ip_addr, version), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
-cursor.execute("CREATE TABLE website_vulnerabilities.traceroute (ip_addr VARCHAR(50), sender_ttl VARCHAR(50), receiver_source VARCHAR(50), sender_time VARCHAR(50), receiver_time VARCHAR(50), PRIMARY KEY (ip_addr, sender_ttl), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
-cursor.execute("CREATE TABLE website_vulnerabilities.forms (url VARCHAR(50), class VARCHAR(500), type VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
-cursor.execute("CREATE TABLE website_vulnerabilities.template (url VARCHAR(50) PRIMARY KEY, temp VARCHAR(500), FOREIGN KEY(url) REFERENCES website(url))")
+#cursor.execute("CREATE TABLE website_vulnerabilities.website (url VARCHAR(50) PRIMARY KEY)")
+#cursor.execute("CREATE TABLE website_vulnerabilities.sub_domain (parent_url VARCHAR(50), child_url VARCHAR(50) PRIMARY KEY, FOREIGN KEY(parent_url) REFERENCES website(url))")
+#cursor.execute("CREATE TABLE website_vulnerabilities.ip_address (url VARCHAR(50), ip_address VARCHAR(50) PRIMARY KEY, ip_version VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
+#cursor.execute("CREATE TABLE website_vulnerabilities.cert (url VARCHAR(50), issued_to VARCHAR(50), issued_by VARCHAR(50), organization VARCHAR(50), country VARCHAR(50), location VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
+#cursor.execute("CREATE TABLE website_vulnerabilities.cipher (url VARCHAR(50), cipher VARCHAR(50), PRIMARY KEY(url, cipher), FOREIGN KEY(url) REFERENCES website(url) )")
+#cursor.execute("CREATE TABLE website_vulnerabilities.port (ip_addr VARCHAR(50), port_number VARCHAR(10), protocol VARCHAR(50), PRIMARY KEY (ip_addr, port_number), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
+#cursor.execute("CREATE TABLE website_vulnerabilities.os (ip_addr VARCHAR(50), version VARCHAR(50), PRIMARY KEY (ip_addr, version), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
+#cursor.execute("CREATE TABLE website_vulnerabilities.traceroute (ip_addr VARCHAR(50), sender_ttl VARCHAR(50), receiver_source VARCHAR(50), sender_time VARCHAR(50), receiver_time VARCHAR(50), PRIMARY KEY (ip_addr, sender_ttl), FOREIGN KEY(ip_addr) REFERENCES ip_address(ip_address))")
+#cursor.execute("CREATE TABLE website_vulnerabilities.forms (url VARCHAR(50), class VARCHAR(500), type VARCHAR(50), FOREIGN KEY(url) REFERENCES website(url))")
+#cursor.execute("CREATE TABLE website_vulnerabilities.template (url VARCHAR(50) PRIMARY KEY, temp VARCHAR(500), FOREIGN KEY(url) REFERENCES website(url))")
 
-start_index = 0
-number = 16
+start_index = 8000
+number = 10000
 
 # with concurrent.futures.ThreadPoolExecutor(max_workers = 8) as executor: ##Limit max number of threads to 8
     # for i in range(start_index, start_index + number):
         # future = executor.submit(main.scan_url, url_list[i], cursor, i)
         # future.add_done_callback(commit)
 
-idx = 0
+idx = start_index
 running = []
 with concurrent.futures.ThreadPoolExecutor() as executor: ##Limit max number of threads to 8
-    while (idx < len(url_list) and len(running) != 0)
-        while len(running < 8 and idx < len(url_list)):
+    while (idx < min(len(url_list), start_index + number) or len(running) != 0):
+        while len(running) < 8 and idx < min(len(url_list), start_index + number):
             running.append(executor.submit(main.scan_url, url_list[idx], cursor, idx))
             idx += 1
         r = 0
-        while (r < len(running)):
+        while r < len(running):
             if running[r].done():
                 commit(running[r])
                 del running[r]
+                r -= 1
             r += 1
 
     #for i in range(start_index, start_index + number):
