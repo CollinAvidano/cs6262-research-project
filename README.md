@@ -34,15 +34,51 @@ with the number of cores/threads you would like to run with.
 
 #### Primary Files
 `main.py`: Main file to run our searching and exploring. Also creates database tables and imports functions from our secondary files.
+
 `thread_launcher.py`: Launches and runs threads that run `main.py` on our dataset.
 
 #### Secondary Files
 `dns_failover.py`: Checks DNS records and failovers
+
 `ports_os.py`: Checks ports and operating systems
+
 `traceroute.py`: Checks traceroutes
+
 `certs.py`: Checks certificates
+
 `ciphersuite.py`: Checks cipher suites
+
 `forms.py`: Checks forms
+
 `template_checker.py`: Checks templates
 
 ## Packages
+This list may be non-comprehensive; we used a variety of programs and packages. 
+
+`os
+configparser
+json
+logging
+dns_failover
+ports_os
+traceroute
+certs
+ciphersuite
+forms
+template_checker
+mysql
+traceback
+ssl
+email
+smtplib
+scapy
+collections
+time
+concurrent
+csv
+random
+tldextract
+subprocess
+socket
+ssl
+dns`
