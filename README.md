@@ -13,7 +13,7 @@ Eric Hsieh (hsieh.eric@gatech.edu)
 Tara Poteat (tpoteat3@gatech.edu)
 
 ## Project Overview
-code to explore the following aspects of these websites:
+We aimed to perform big data analysis on popular websites and check for common vulnerabilities. Our initial dataset (`top-1m.csv`) contains the top 1 million most popular sites from 2014, which was too large to run in a feasible amount of time. Thus, we took a random subset of 10,000 websites as our main dataset and wrote code to explore the following aspects of these websites:
 
 * DNS Records
 * Open Ports
@@ -23,10 +23,7 @@ code to explore the following aspects of these websites:
 * Forms and Templates
 * Operating Systems
 
-We also attempted to guess 
-
 Running our program was very time consuming, so we opted to run it for several days on a server
-
 ## Running Instructions
 
 
