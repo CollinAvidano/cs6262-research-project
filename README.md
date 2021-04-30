@@ -53,7 +53,7 @@ with the number of cores/threads you would like to run with.
 `template_checker.py`: Checks templates
 
 ## Packages
-This list may be non-comprehensive; we used a variety of programs and packages. 
+This list may be non-comprehensive; we used a variety of programs and packages that are not easy to compile.
 
 `os
 configparser
