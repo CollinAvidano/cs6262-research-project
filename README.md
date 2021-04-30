@@ -29,5 +29,20 @@ Running our program was very time consuming, so we opted to run it for several d
 
 Run from thread_launcher.py, making sure to change the "8" in Line 127:
 >  while len(running) < 8 and idx < min(len(url_list), start_index + number)
+
 with the number of cores/threads you would like to run with.
+
+#### Primary Files
+`main.py`: Main file to run our searching and exploring. Also creates database tables and imports functions from our secondary files.
+`thread_launcher.py`: Launches and runs threads that run `main.py` on our dataset.
+
+#### Secondary Files
+`dns_failover.py`: Checks DNS records and failovers
+`ports_os.py`: Checks ports and operating systems
+`traceroute.py`: Checks traceroutes
+`certs.py`: Checks certificates
+`ciphersuite.py`: Checks cipher suites
+`forms.py`: Checks forms
+`template_checker.py`: Checks templates
+
 ## Packages
