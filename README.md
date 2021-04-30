@@ -15,5 +15,7 @@ Tara Poteat (tpoteat3@gatech.edu)
 ## Project Overview
 
 ## Running Instructions
-
+Run from thread_launcher.py, making sure to change the "8" in Line 127:
+>  while len(running) < 8 and idx < min(len(url_list), start_index + number)
+with the number of cores/threads you would like to run with.
 ## Packages
